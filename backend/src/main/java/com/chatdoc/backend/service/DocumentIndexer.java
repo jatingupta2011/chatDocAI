@@ -2,41 +2,55 @@ package com.chatdoc.backend.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.document.Document;
-import org.springframework.ai.vectorstore.SearchRequest;
+import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
 
+import com.chatdoc.backend.model.DocumentChunk;
+
 import java.util.List;
 
-@Service
 @RequiredArgsConstructor
+@Service
 public class DocumentIndexer {
 
     private final VectorStore vectorStore;
+    private final EmbeddingModel embeddingModel;
 
-    public int index(List<String> chunks) {
+    public int index(List<DocumentChunk> chunks) {
 
-        List<Document> documents = chunks.stream()
-                .map(chunk -> new Document(chunk))
-                .toList();
+        for (DocumentChunk chunk : chunks) {
 
-        System.out.println("Documents: " + documents.size());
+            float[] embedding = embeddingModel.embed(chunk.getText());
 
-        vectorStore.add(documents);
-        System.out.println(vectorStore.getClass().getName());
-        System.out.println("===== INDEXING COMPLETE =====");
-        System.out.println("Stored " + documents.size() + " documents.");
+            System.out.println("Chunk:");
+            System.out.println(chunk);
 
-        List<Document> result = vectorStore.similaritySearch(
-                SearchRequest.builder()
-                        .query("the")
-                        .topK(5)
-                        .build());
+            System.out.println("\nVector length = " + embedding.length);
 
-        System.out.println("Retrieved = " + result.size());
+            for (int i = 0; i < 10; i++) {
+                System.out.println(i + " -> " + embedding[i]);
+            }
 
-        result.forEach(doc ->
-                System.out.println(doc.getText()));
-        return documents.size();
+            System.out.println("--------------------------------");
+        }
+
+        List<Document> docs = chunks.stream()
+        .map(chunk -> {
+
+            Document document = new Document(chunk.getText());
+
+            document.getMetadata().put("fileName", chunk.getFileName());
+            document.getMetadata().put("page", chunk.getPageNumber());
+            document.getMetadata().put("chunk", chunk.getChunkNumber());
+
+            return document;
+        })
+        .toList();
+
+        
+        vectorStore.add(docs);
+
+        return docs.size();
     }
 }

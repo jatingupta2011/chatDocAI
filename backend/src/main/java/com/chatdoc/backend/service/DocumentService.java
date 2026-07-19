@@ -1,5 +1,6 @@
 package com.chatdoc.backend.service;
 
+import com.chatdoc.backend.model.DocumentChunk;
 import com.chatdoc.backend.parser.PdfParser;
 import com.chatdoc.backend.util.TextChunker;
 
@@ -7,8 +8,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import org.springframework.ai.document.Document;
-import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,7 +26,7 @@ public class DocumentService {
 
             String text = pdfParser.extractText(file);
             
-            List<String> chunks = textChunker.chunk(text);
+            List<DocumentChunk> chunks = textChunker.chunk(text, file.getOriginalFilename());
             
             int indexed = documentIndexer.index(chunks);
 
