@@ -1,0 +1,64 @@
+@startuml
+
+actor User
+
+participant React
+participant SpringBoot
+participant PdfParser
+participant Chunker
+participant VectorStore
+participant Ollama
+database Chroma
+participant OpenRouter
+
+== Upload ==
+
+User -> React : Upload PDF
+
+React -> SpringBoot : POST /upload
+
+SpringBoot -> PdfParser : Extract Text
+
+PdfParser --> SpringBoot : Text
+
+SpringBoot -> Chunker : Split
+
+Chunker --> SpringBoot : Chunks
+
+SpringBoot -> VectorStore : add(documents)
+
+VectorStore -> Ollama : Create Embeddings
+
+Ollama --> VectorStore : Vectors
+
+VectorStore -> Chroma : Store
+
+Chroma --> VectorStore : OK
+
+SpringBoot --> React : Upload Successful
+
+== Chat ==
+
+User -> React : Ask Question
+
+React -> SpringBoot : POST /chat
+
+SpringBoot -> VectorStore : similaritySearch()
+
+VectorStore -> Ollama : Embed Question
+
+Ollama --> VectorStore
+
+VectorStore -> Chroma : Search
+
+Chroma --> VectorStore : Top K Chunks
+
+VectorStore --> SpringBoot : Context
+
+SpringBoot -> OpenRouter : Prompt + Context
+
+OpenRouter --> SpringBoot : Answer
+
+SpringBoot --> React : Response
+
+@enduml

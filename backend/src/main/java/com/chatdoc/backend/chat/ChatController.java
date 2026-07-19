@@ -17,9 +17,9 @@ public class ChatController {
     @PostMapping
     public ChatResponse chat(@RequestBody ChatRequest request) {
 
-        String answer = chatService.chat(request.message());
+        // String answer = chatService.chat(request.message());
 
-        return new ChatResponse(answer);
+        return new ChatResponse(chatService.chat(request.getQuestion()));
 
     }
 

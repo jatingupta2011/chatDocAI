@@ -1,0 +1,49 @@
+@startuml
+
+title ChatDoc AI State Machine
+
+[*] --> Idle
+
+Idle --> UploadRequested : Upload PDF
+
+UploadRequested --> Parsing
+
+state Parsing {
+    [*] --> ExtractText
+    ExtractText --> ChunkText
+    ChunkText --> Parsed
+}
+
+Parsing --> Indexing
+
+state Indexing {
+
+    [*] --> CreateDocuments
+
+    CreateDocuments --> GenerateEmbeddings
+
+    GenerateEmbeddings --> StoreVectors
+
+    StoreVectors --> Indexed
+
+}
+
+Indexing --> Ready
+
+Ready --> QuestionAsked
+
+QuestionAsked --> EmbedQuestion
+
+EmbedQuestion --> SimilaritySearch
+
+SimilaritySearch --> BuildPrompt
+
+BuildPrompt --> CallLLM
+
+CallLLM --> GenerateAnswer
+
+GenerateAnswer --> Ready
+
+Ready --> UploadRequested
+
+@enduml
