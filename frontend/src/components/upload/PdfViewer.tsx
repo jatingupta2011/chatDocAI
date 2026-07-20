@@ -1,5 +1,5 @@
 import { Document, Page, pdfjs } from "react-pdf";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FileWarning, LoaderCircle } from "lucide-react";
 
 import "react-pdf/dist/Page/AnnotationLayer.css";
@@ -17,12 +17,34 @@ interface PdfViewerProps {
 export default function PdfViewer({ file }: PdfViewerProps) {
     const [numPages, setNumPages] = useState(0);
     const [loadError, setLoadError] = useState(false);
+    const [pageWidth, setPageWidth] = useState(0);
+    const viewerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        setNumPages(0);
+        setLoadError(false);
+    }, [file]);
+
+    useEffect(() => {
+        const viewer = viewerRef.current;
+        if (!viewer) return;
+
+        const resizeObserver = new ResizeObserver(([entry]) => {
+            setPageWidth(Math.max(0, Math.floor(entry.contentRect.width - 24)));
+        });
+
+        resizeObserver.observe(viewer);
+        return () => resizeObserver.disconnect();
+    }, []);
 
     return (
-        <div className="max-h-[52vh] overflow-auto rounded-2xl border border-slate-200 bg-slate-100 p-3 shadow-inner sm:p-4">
+        <div ref={viewerRef} className="rounded-2xl border border-slate-200 bg-slate-100 p-3 shadow-inner sm:p-4">
             <Document
                 file={file}
-                onLoadSuccess={({ numPages }) => setNumPages(numPages)}
+                onLoadSuccess={({ numPages }) => {
+                    setNumPages(numPages);
+                    setLoadError(false);
+                }}
                 onLoadError={() => setLoadError(true)}
                 loading={
                     <div className="flex min-h-64 items-center justify-center gap-2 text-sm text-slate-500">
@@ -37,9 +59,9 @@ export default function PdfViewer({ file }: PdfViewerProps) {
                     </div>
                 }
             >
-                {!loadError && Array.from(new Array(numPages), (_, index) => (
-                    <div key={index} className="mb-4 flex min-w-[500px] justify-center last:mb-0">
-                        <Page pageNumber={index + 1} width={500} />
+                {!loadError && pageWidth > 0 && Array.from(new Array(numPages), (_, index) => (
+                    <div key={index} className="mb-4 flex justify-center last:mb-0">
+                        <Page pageNumber={index + 1} width={pageWidth} />
                     </div>
                 ))}
             </Document>
