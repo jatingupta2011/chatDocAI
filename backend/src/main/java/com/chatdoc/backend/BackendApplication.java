@@ -11,7 +11,7 @@ import com.chatdoc.backend.config.ChatDocProperties;
 @SpringBootApplication(
     exclude = {
         ChatClientAutoConfiguration.class,
-        OpenAiEmbeddingAutoConfiguration.class
+        // OpenAiEmbeddingAutoConfiguration.class
     }
 )
 @EnableConfigurationProperties(ChatDocProperties.class)
