@@ -16,7 +16,7 @@ public class TextChunker {
     private final ChatDocProperties properties ;
 
     
-    public List<DocumentChunk> chunk(String text, String fileName) {
+    public List<DocumentChunk> chunk(String text, String fileName, String sessionId) {
         final int CHUNK_SIZE = properties.getChunking().getChunkSize();
         final int OVERLAP = properties.getChunking().getOverlap();
 
@@ -44,6 +44,7 @@ public class TextChunker {
 
             chunks.add(
                     DocumentChunk.builder()
+                            .sessionId(sessionId)
                             .text(text.substring(start, end).trim())
                             .fileName(fileName)
                             .pageNumber(1) // temporary

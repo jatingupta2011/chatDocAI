@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DocumentChunk {
 
+    private String sessionId;
+
     private String text;
 
     private String fileName;

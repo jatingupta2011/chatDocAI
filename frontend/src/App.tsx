@@ -2,10 +2,12 @@ import UploadBox from "./components/upload/UploadBox";
 import ChatWindow from "./components/chat/ChatWindow";
 import ChatInput from "./components/chat/ChatInput";
 import { useChat } from "./hooks/useChat";
+import { useDocument } from "./hooks/useDocument";
 import { FileText, Sparkles } from "lucide-react";
 
 function App() {
     const { messages, loading, ask } = useChat();
+    const { sessionId, setSessionId } = useDocument();
 
     return (
         <div className="min-h-screen bg-slate-50 text-slate-900">
@@ -29,7 +31,7 @@ function App() {
 
             <main className="mx-auto flex min-h-[calc(100vh-65px)] max-w-[1800px] flex-col lg:h-[calc(100vh-65px)] lg:flex-row lg:p-4">
                 <aside className="border-b border-slate-200 bg-white lg:h-full lg:w-[42%] lg:overflow-y-auto lg:rounded-l-2xl lg:border-b-0 lg:border-r lg:shadow-sm xl:w-[38%]">
-                    <UploadBox />
+                    <UploadBox onSessionChange={setSessionId} />
                 </aside>
 
                 <section className="flex min-h-[58vh] flex-1 flex-col bg-slate-50 lg:min-h-0 lg:rounded-r-2xl lg:border lg:border-l-0 lg:border-slate-200 lg:shadow-sm">
@@ -42,8 +44,9 @@ function App() {
 
                     <div className="border-t border-slate-200 bg-white/90 p-3 backdrop-blur sm:p-4">
                         <ChatInput 
-                            onSend={ask}
+                            onSend={(question) => ask(question, sessionId)}
                             isLoading={loading}
+                            disabled={!sessionId}
                         />
                     </div>
                 </section>

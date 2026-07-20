@@ -2,17 +2,16 @@ import { API } from "./api";
 
 export interface ChatRequest {
     question: string;
+    sessionId: string;
 }
 
-export async function sendMessage(question: string): Promise<string> {
+export async function sendMessage(question: string, sessionId: string): Promise<string> {
     const response = await fetch(`${API.baseUrl}/chat`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-            question,
-        }),
+        body: JSON.stringify({ question, sessionId }),
     });
 
     if (!response.ok) {

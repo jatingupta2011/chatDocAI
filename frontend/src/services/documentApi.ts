@@ -1,6 +1,12 @@
 import { API } from "./api";
 
-export async function uploadDocument(file: File): Promise<string> {
+export interface UploadResponse {
+    sessionId: string;
+    indexedChunks: number;
+    message: string;
+}
+
+export async function uploadDocument(file: File): Promise<UploadResponse> {
     const formData = new FormData();
     formData.append("file", file);
 
@@ -14,5 +20,5 @@ export async function uploadDocument(file: File): Promise<string> {
         throw new Error(error.message);
     }
 
-    return response.text();
+    return response.json();
 }

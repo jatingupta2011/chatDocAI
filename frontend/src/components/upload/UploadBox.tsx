@@ -3,7 +3,11 @@ import { uploadDocument } from "../../services/documentApi";
 import PdfViewer from "./PdfViewer";
 import { CheckCircle2, CircleAlert, FileText, LoaderCircle, UploadCloud } from "lucide-react";
 
-export default function UploadBox() {
+interface UploadBoxProps {
+    onSessionChange(sessionId: string | null): void;
+}
+
+export default function UploadBox({ onSessionChange }: UploadBoxProps) {
     const [file, setFile] = useState<File | null>(null);
     const [message, setMessage] = useState("");
     const [uploading, setUploading] = useState(false);
@@ -19,10 +23,12 @@ export default function UploadBox() {
 
         setFile(selectedFile);
         setMessage("");
+        onSessionChange(null);
         try {
             setUploading(true);
             const response = await uploadDocument(selectedFile);
-            setMessage(response);
+            setMessage(response.message);
+            onSessionChange(response.sessionId);
         } catch {
             setMessage("❌ Upload failed");
         } finally {

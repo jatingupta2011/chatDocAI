@@ -4,9 +4,10 @@ import { ArrowUp } from "lucide-react";
 interface Props {
     onSend(question: string): void;
     isLoading?: boolean;
+    disabled?: boolean;
 }
 
-export default function ChatInput({ onSend, isLoading = false }: Props) {
+export default function ChatInput({ onSend, isLoading = false, disabled = false }: Props) {
     const [question, setQuestion] = useState("");
 
     const send = () => {
@@ -21,16 +22,16 @@ export default function ChatInput({ onSend, isLoading = false }: Props) {
             <input
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && !isLoading && send()}
-                placeholder="Ask something about your document..."
+                onKeyDown={(e) => e.key === "Enter" && !isLoading && !disabled && send()}
+                placeholder={disabled ? "Upload and index a PDF to start chatting" : "Ask something about your document..."}
                 aria-label="Ask a question about your document"
-                disabled={isLoading}
+                disabled={isLoading || disabled}
                 className="min-w-0 flex-1 bg-transparent px-3 py-2 text-sm outline-none placeholder:text-slate-400 disabled:cursor-not-allowed sm:text-base"
             />
 
             <button
                 onClick={send}
-                disabled={!question.trim() || isLoading}
+                disabled={!question.trim() || isLoading || disabled}
                 aria-label="Send message"
                 className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm transition hover:bg-blue-700 hover:shadow-md disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400"
             >

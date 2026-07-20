@@ -17,9 +17,9 @@ public class ChatService {
     private final PromptBuilder promptBuilder;
 
     @SuppressWarnings("null")
-    public String chat(String question) {
+    public String chat(String question, String sessionId) {
 
-        List<Document> documents = retrievalService.retrieve(question);
+        List<Document> documents = retrievalService.retrieve(question, sessionId);
 
         System.out.println("Documents retrieved: " + documents.size());
         if (documents.isEmpty()) {

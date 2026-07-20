@@ -9,7 +9,9 @@ import com.chatdoc.backend.util.TextChunker;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
+import com.chatdoc.backend.dto.UploadResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,7 +24,7 @@ public class DocumentService {
     private final DocumentIndexer documentIndexer;
 
 
-    public String processDocument(MultipartFile file) {
+    public UploadResponse processDocument(MultipartFile file) {
 
         if (file.isEmpty()) {
             throw new InvalidDocumentException("Uploaded file is empty.");
@@ -36,15 +38,16 @@ public class DocumentService {
 
             String text = pdfParser.extractText(file);
             
-            List<DocumentChunk> chunks = textChunker.chunk(text, file.getOriginalFilename());
+            String sessionId = UUID.randomUUID().toString();
+            List<DocumentChunk> chunks = textChunker.chunk(text, file.getOriginalFilename(), sessionId);
             
             int indexed = documentIndexer.index(chunks);
 
-            return indexed + " chunks indexed successfully.";
-
-            // documentIndexer.index(chunks);
-            // System.out.println("Chunks : " + chunks);
-            // return "Successfully indexed " + chunks.size() + " chunks.";
+            return new UploadResponse(
+                    sessionId,
+                    indexed,
+                    indexed + " chunks indexed successfully."
+            );
 
         } catch (Exception e) {
 
