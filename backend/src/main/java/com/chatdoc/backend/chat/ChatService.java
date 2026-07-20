@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.document.Document;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -22,12 +21,18 @@ public class ChatService {
 
         List<Document> documents = retrievalService.retrieve(question);
 
+        System.out.println("Documents retrieved: " + documents.size());
+        if (documents.isEmpty()) {
+            return "I couldn't find anything as dociments are not uploaded yet. Please upload a document first.";
+        }
+
         System.out.println("Question: " + question);
         System.out.println("Documents: " + documents);
 
         String prompt = promptBuilder.buildPrompt(question, documents);
 
         System.out.println("Prompt: " + prompt);
+        
         return chatClient.prompt()
                 .user(prompt)
                 .call()

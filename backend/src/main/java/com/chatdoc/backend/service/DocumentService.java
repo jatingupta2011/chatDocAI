@@ -1,5 +1,7 @@
 package com.chatdoc.backend.service;
 
+import com.chatdoc.backend.exception.DocumentProcessingException;
+import com.chatdoc.backend.exception.InvalidDocumentException;
 import com.chatdoc.backend.model.DocumentChunk;
 import com.chatdoc.backend.parser.PdfParser;
 import com.chatdoc.backend.util.TextChunker;
@@ -22,6 +24,14 @@ public class DocumentService {
 
     public String processDocument(MultipartFile file) {
 
+        if (file.isEmpty()) {
+            throw new InvalidDocumentException("Uploaded file is empty.");
+        }
+
+        if (!"application/pdf".equalsIgnoreCase(file.getContentType())) {
+            throw new InvalidDocumentException("Only PDF files are supported.");
+        }
+
         try {
 
             String text = pdfParser.extractText(file);
@@ -38,7 +48,7 @@ public class DocumentService {
 
         } catch (Exception e) {
 
-            throw new RuntimeException("Failed to parse PDF", e);
+            throw new DocumentProcessingException("Unable to parse PDF.", e);
 
         }
 

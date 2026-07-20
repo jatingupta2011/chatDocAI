@@ -1,19 +1,26 @@
 package com.chatdoc.backend.util;
 
+import com.chatdoc.backend.config.ChatDocProperties;
 import com.chatdoc.backend.model.DocumentChunk;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Component
 public class TextChunker {
+    private final ChatDocProperties properties ;
 
-    private static final int CHUNK_SIZE = 800;
-    private static final int OVERLAP = 150;
-
+    
     public List<DocumentChunk> chunk(String text, String fileName) {
+        final int CHUNK_SIZE = properties.getChunking().getChunkSize();
+        final int OVERLAP = properties.getChunking().getOverlap();
 
+        System.out.println("Chunking text with CHUNK_SIZE = " + CHUNK_SIZE + " and OVERLAP = " + OVERLAP);
         List<DocumentChunk> chunks = new ArrayList<>();
 
         int start = 0;

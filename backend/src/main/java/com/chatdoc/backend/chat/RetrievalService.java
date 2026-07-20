@@ -5,6 +5,8 @@ import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
+import com.chatdoc.backend.config.ChatDocProperties;
+
 import java.util.List;
 
 import org.springframework.ai.document.Document;
@@ -18,12 +20,15 @@ public class RetrievalService {
 
     private final VectorStore vectorStore;
 
+    final ChatDocProperties properties ;
     public List<Document> retrieve(@NonNull String question) {
-
+        
         return vectorStore.similaritySearch(
                 SearchRequest.builder()
-                        .query(question)
-                        .topK(4)
-                        .build());
+                    .query(question)
+                    .topK(properties.getRetrieval().getTopK())
+                    .similarityThreshold(properties.getRetrieval().getSimilarityThreshold())
+                    .build());
+                    
     }
 }

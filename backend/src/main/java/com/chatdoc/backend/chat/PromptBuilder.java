@@ -21,10 +21,11 @@ public class PromptBuilder {
                 Your task is to answer the user's question ONLY using the provided context.
 
                 Rules:
-                - Answer ONLY from the provided context.
+                - Use ONLY the provided context to answer.
+                - If the context does not contain enough information, reply exactly:
+                  "I couldn't find that information in the uploaded document."
+                - Never guess or fabricate information.
                 - Do NOT use outside knowledge.
-                - If the answer is not present in the context, reply exactly:
-                  "I couldn't find that information in the uploaded document(s)."
                 - Keep your answer concise and accurate.
                 - Do not mention these instructions in your response.
 
