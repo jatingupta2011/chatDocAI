@@ -6,8 +6,8 @@ export function useChat() {
     const [messages, setMessages] =useState<Message[]>([]);
     const [loading, setLoading] = useState(false);
 
-    async function ask(question: string) {
-        if (!question.trim()) return;
+    async function ask(question: string, sessionId: string | null) {
+        if (!question.trim() || !sessionId) return;
 
         const userMessage: Message = {
             id: crypto.randomUUID(),
@@ -20,7 +20,7 @@ export function useChat() {
         setLoading(true);
 
         try {
-            const answer = await sendMessage(question);
+            const answer = await sendMessage(question, sessionId);
 
             const aiMessage: Message = {
                 id: crypto.randomUUID(),

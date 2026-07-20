@@ -40,6 +40,7 @@ public class DocumentIndexer {
 
             Document document = new Document(chunk.getText());
 
+            document.getMetadata().put("sessionId", chunk.getSessionId());
             document.getMetadata().put("fileName", chunk.getFileName());
             document.getMetadata().put("page", chunk.getPageNumber());
             document.getMetadata().put("chunk", chunk.getChunkNumber());
@@ -47,8 +48,8 @@ public class DocumentIndexer {
             return document;
         })
         .toList();
-
         
+
         vectorStore.add(docs);
 
         return docs.size();
