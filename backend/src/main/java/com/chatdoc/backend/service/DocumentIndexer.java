@@ -15,25 +15,8 @@ import java.util.List;
 public class DocumentIndexer {
 
     private final VectorStore vectorStore;
-    private final EmbeddingModel embeddingModel;
 
     public int index(List<DocumentChunk> chunks) {
-
-        for (DocumentChunk chunk : chunks) {
-
-            float[] embedding = embeddingModel.embed(chunk.getText());
-
-            System.out.println("Chunk:");
-            System.out.println(chunk);
-
-            System.out.println("\nVector length = " + embedding.length);
-
-            for (int i = 0; i < 10; i++) {
-                System.out.println(i + " -> " + embedding[i]);
-            }
-
-            System.out.println("--------------------------------");
-        }
 
         List<Document> docs = chunks.stream()
         .map(chunk -> {
