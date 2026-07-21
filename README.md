@@ -19,3 +19,5 @@ An AI-powered document intelligence platform built with Spring Boot, React, Spri
 - ChromaDB
 - OpenRouter
 - Docker
+
+<img width="1440" height="900" alt="image" src="https://github.com/user-attachments/assets/22748322-8cf4-4c9d-a84e-b6b052c256ba" />
